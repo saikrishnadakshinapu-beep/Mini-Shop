@@ -17,7 +17,8 @@ const allowedOrigins = new Set([
 
 app.use((req, res, next) => {
   const origin = req.get('origin');
-  if (origin && allowedOrigins.has(origin)) {
+  const isAllowedOrigin = !origin || allowedOrigins.has(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  if (origin && isAllowedOrigin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Vary', 'Origin');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   }
 
-  if (req.method === 'OPTIONS') return res.sendStatus(origin && !allowedOrigins.has(origin) ? 403 : 204);
+  if (req.method === 'OPTIONS') return res.sendStatus(isAllowedOrigin ? 204 : 403);
   next();
 });
 

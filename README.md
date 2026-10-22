@@ -111,7 +111,7 @@ npm run build
 
 ## Deploy the backend on Render
 
-The root `render.yaml` configures a Node web service for the `main` branch. Connect this repository to Render as a Blueprint, then set the `MONGODB_URI` secret to your MongoDB connection string in the service environment. The secret is intentionally not stored in this repository. The service uses `/api/health` as its health check and listens on Render's assigned `PORT`. The frontend calls `https://mini-shop-wcfx.onrender.com/api`; add the deployed frontend origin to Render's comma-separated `FRONTEND_ORIGIN` environment variable if the frontend is hosted on a different origin. Local Angular origins on port 4200 are allowed by default.
+The root `render.yaml` configures a Node web service for the `main` branch. Connect this repository to Render as a Blueprint, then set the `MONGODB_URI` secret to your MongoDB connection string in the service environment. The secret is intentionally not stored in this repository. The service uses `/api/health` as its health check and listens on Render's assigned `PORT`. The frontend calls `https://mini-shop-wcfx.onrender.com/api`; add the deployed frontend origin to Render's comma-separated `FRONTEND_ORIGIN` environment variable if the frontend is hosted on a different origin. Localhost and 127.0.0.1 development origins are allowed on any port.
 
 Before the service can become healthy, the MongoDB cluster must accept connections from the Render service. The backend does not seed or reset the remote database during deployment; seed the catalog only after confirming the target database is intended for this app.
 
