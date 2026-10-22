@@ -65,10 +65,24 @@
               </div>
               <strong class="product-price">{{ product.price | currency:'INR':'symbol-narrow':'1.0-0' }}</strong>
             </div>
-            <button class="add-button" type="button" [disabled]="product.stock === 0" (click)="addToCart(product)">
-              <span>{{ product.stock === 0 ? 'Currently unavailable' : 'Add to bag' }}</span>
-              <span class="add-arrow" aria-hidden="true">↗</span>
-            </button>
+            <ng-container *ngIf="cart.quantityFor(product.id) > 0; else addProductButton">
+              <div class="product-cart-actions" [attr.aria-label]="product.name + ' bag controls'">
+                <div class="product-quantity-control" [attr.aria-label]="'Quantity of ' + product.name + ' in your bag'">
+                  <button type="button" (click)="updateQuantity(product, -1)" [attr.aria-label]="'Decrease ' + product.name + ' quantity'">−</button>
+                  <span>{{ cart.quantityFor(product.id) }}</span>
+                  <button type="button" (click)="addToCart(product)" [disabled]="cart.quantityFor(product.id) >= product.stock" [attr.aria-label]="'Increase ' + product.name + ' quantity'">+</button>
+                </div>
+                <button class="product-remove-button" type="button" (click)="removeFromCart(product)" [attr.aria-label]="'Remove all ' + product.name + ' from your bag'">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 13h10l1-13M10 11v5m4-5v5" /></svg>
+                </button>
+              </div>
+            </ng-container>
+            <ng-template #addProductButton>
+              <button class="add-button" type="button" [disabled]="product.stock === 0" (click)="addToCart(product)">
+                <span>{{ product.stock === 0 ? 'Currently unavailable' : 'Add to bag' }}</span>
+                <span class="add-arrow" aria-hidden="true">↗</span>
+              </button>
+            </ng-template>
           </div>
         </article>
       </div>

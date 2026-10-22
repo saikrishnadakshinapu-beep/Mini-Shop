@@ -593,9 +593,63 @@ body:has(.cart-overlay) { overflow: hidden; }
   backdrop-filter: blur(8px);
 }
 .quantity-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); }
+.product-cart-actions { display: flex; min-width: 0; height: 43px; align-items: center; gap: 8px; margin-top: 13px; }
+.product-quantity-control {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid #dfe5db;
+  border-radius: 9px;
+  background: #fbfcf8;
+}
+.product-quantity-control button {
+  display: grid;
+  width: 38px;
+  height: 100%;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: #52675a;
+  cursor: pointer;
+  font-size: 19px;
+}
+.product-quantity-control button:hover:not(:disabled) { background: #eff4e7; }
+.product-quantity-control button:disabled { color: #c4c9c3; cursor: not-allowed; }
+.product-quantity-control span { min-width: 22px; color: var(--ink); font-size: 12px; font-weight: 750; text-align: center; }
+.product-remove-button {
+  display: grid;
+  width: 43px;
+  height: 43px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #f0ddd6;
+  border-radius: 9px;
+  background: #fffaf8;
+  color: #a45f4c;
+  cursor: pointer;
+}
+.product-remove-button:hover { border-color: #e7c8bd; background: #fff1eb; color: #874634; }
+.product-remove-button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.6; }
 @keyframes cart-drawer-enter {
   from { opacity: .6; transform: translateX(24px); }
   to { opacity: 1; transform: translateX(0); }
+}
+@media (max-width: 760px) {
+  .product-cart-actions { height: 38px; gap: 6px; margin-top: 9px; }
+  .product-quantity-control { border-radius: 7px; }
+  .product-quantity-control button { width: 33px; }
+  .product-remove-button { width: 38px; height: 38px; border-radius: 7px; }
+}
+@media (max-width: 390px) {
+  .product-cart-actions { gap: 5px; }
+  .product-quantity-control button { width: 29px; }
+  .product-quantity-control span { min-width: 18px; font-size: 11px; }
+  .product-remove-button { width: 34px; }
 }
 @media (max-width: 760px) {
   .cart-panel.cart-drawer {
