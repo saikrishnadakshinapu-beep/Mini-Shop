@@ -519,7 +519,9 @@ body { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
   justify-content: flex-end;
   background: rgba(12, 31, 25, .42);
   backdrop-filter: blur(3px);
+  overscroll-behavior: contain;
 }
+body:has(.cart-overlay) { overflow: hidden; }
 .cart-panel.cart-drawer {
   position: relative;
   top: auto;
@@ -528,6 +530,7 @@ body { padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
   height: 100dvh;
   max-height: 100dvh;
   overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 28px 25px calc(24px + env(safe-area-inset-bottom));
   border: 0;
   border-left: 1px solid rgba(230, 235, 225, .85);
