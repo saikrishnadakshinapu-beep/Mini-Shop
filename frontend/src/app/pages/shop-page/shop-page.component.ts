@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -53,6 +53,11 @@ export class ShopPageComponent {
       this.loading.set(false);
     });
     this.searches.next('');
+  }
+
+  @HostListener('document:keydown.escape')
+  closeCartOnEscape(): void {
+    this.cart.closePanel();
   }
 
   onSearch(event: Event): void {

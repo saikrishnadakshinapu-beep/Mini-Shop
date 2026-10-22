@@ -76,13 +76,14 @@
       </div>
     </section>
 
-    <aside class="cart-panel" id="cart" aria-labelledby="cart-title">
+    <div class="cart-overlay" *ngIf="cart.panelOpen()" (click)="cart.closePanel()">
+    <aside class="cart-panel cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title" (click)="$event.stopPropagation()">
       <div class="cart-panel-head">
         <div>
           <p class="eyebrow cart-eyebrow">YOUR SELECTION</p>
           <h2 id="cart-title">The bag<span class="cart-title-count">{{ cart.itemCount() }}</span></h2>
         </div>
-        <span class="cart-stamp" aria-hidden="true">S.</span>
+        <button class="cart-close" type="button" (click)="cart.closePanel()" aria-label="Close your bag">×</button>
       </div>
 
       <p class="notice-message" *ngIf="cartNotice()" role="status">{{ cartNotice() }}</p>
@@ -128,6 +129,7 @@
       </button>
       <p class="checkout-footnote"><span class="lock-mark" aria-hidden="true">◌</span> A quick, no-fuss checkout</p>
     </aside>
+    </div>
   </div>
 
   <section class="closing-note" aria-label="Store note">

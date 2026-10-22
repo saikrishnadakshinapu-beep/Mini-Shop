@@ -7,6 +7,7 @@ const STORAGE_KEY = 'shift-cart-v1';
 export class CartService {
   private readonly catalog = signal<Product[]>([]);
   private readonly entries = signal<CartEntry[]>(this.readStorage());
+  readonly panelOpen = signal(false);
 
   readonly lines = computed<CartLine[]>(() => {
     const products = new Map(this.catalog().map((product) => [product.id, product]));
@@ -18,6 +19,14 @@ export class CartService {
   readonly itemCount = computed(() => this.entries().reduce((sum, entry) => sum + entry.quantity, 0));
   readonly subtotal = computed(() => this.lines().reduce((sum, line) => sum + line.lineTotal, 0));
   readonly total = computed(() => this.subtotal());
+
+  togglePanel(): void {
+    this.panelOpen.update((open) => !open);
+  }
+
+  closePanel(): void {
+    this.panelOpen.set(false);
+  }
 
   setCatalog(products: Product[]): boolean {
     this.catalog.set(products);

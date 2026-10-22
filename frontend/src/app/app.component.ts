@@ -16,7 +16,8 @@ import { ToastService } from './core/toast.service';
         </a>
         <nav class="header-nav" aria-label="Main navigation">
           <span class="nav-caption">Thoughtful everyday tech</span>
-          <a class="cart-link" routerLink="/" fragment="cart" aria-label="View your cart">
+          <a class="cart-link" routerLink="/" (click)="cart.togglePanel()"
+             [attr.aria-expanded]="cart.panelOpen()" aria-controls="cart-drawer" aria-label="View your cart">
             <span class="cart-link-icon" aria-hidden="true"></span>
             <span>Cart</span>
             <span class="cart-count">{{ cart.itemCount() }}</span>
