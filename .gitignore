@@ -1,0 +1,11 @@
+node_modules/
+**/node_modules/
+frontend/.angular/
+frontend/dist/
+frontend/out-tsc/
+coverage/
+.env
+**/.env
+.data/
+*.log
+.DS_Store

@@ -1,0 +1,43 @@
+<main class="confirmation-page page-shell">
+  <div class="confirmation-topline"><span class="eyebrow"><span class="eyebrow-dot"></span> ORDER DESK</span><a routerLink="/" class="back-link">← Back to the edit</a></div>
+
+  <div class="confirmation-loading" *ngIf="loading()" role="status"><span class="spinner"></span><span>Looking up your order…</span></div>
+
+  <section class="confirmation-error" *ngIf="!loading() && errorMessage()" role="alert">
+    <span class="error-mark" aria-hidden="true">!</span>
+    <h1>We couldn’t find that order.</h1>
+    <p>{{ errorMessage() }}</p>
+    <button type="button" class="checkout-button retry-button" (click)="loadOrder()"><span>Try again</span><span aria-hidden="true">↻</span></button>
+    <a routerLink="/" class="text-button">Return to the shop</a>
+  </section>
+
+  <section class="confirmation-card" *ngIf="!loading() && order() as placedOrder" aria-labelledby="confirmation-title">
+    <div class="confirmation-art" aria-hidden="true">
+      <span class="conf-sun"></span><span class="conf-orbit orbit-a"></span><span class="conf-orbit orbit-b"></span>
+      <span class="conf-check">✓</span><span class="conf-spark spark-a">✳</span><span class="conf-spark spark-b">✦</span>
+      <span class="conf-caption">GOOD THINGS<br>ARE ON THEIR WAY</span>
+    </div>
+    <div class="confirmation-copy">
+      <p class="eyebrow"><span class="eyebrow-dot"></span> YOU’RE ALL SET</p>
+      <h1 id="confirmation-title">Good choice.<br><em>It’s in the works.</em></h1>
+      <p class="confirmation-intro">Your order is confirmed. We’re glad you found something that fits your everyday.</p>
+      <div class="order-reference">
+        <span>ORDER NUMBER</span>
+        <strong>{{ placedOrder.orderNumber }}</strong>
+        <small>{{ formatDate(placedOrder.createdAt) }}</small>
+      </div>
+    </div>
+
+    <div class="confirmation-summary">
+      <div class="summary-head"><h2>Your order</h2><span>{{ placedOrder.items.length }} {{ placedOrder.items.length === 1 ? 'item' : 'items' }}</span></div>
+      <div class="summary-line" *ngFor="let item of placedOrder.items">
+        <div class="summary-item-icon" aria-hidden="true">✳</div>
+        <div class="summary-item-copy"><strong>{{ item.name }}</strong><span>Qty {{ item.quantity }} <span class="summary-times">×</span> {{ item.unitPrice | currency:'INR':'symbol-narrow':'1.0-0' }}</span></div>
+        <strong>{{ item.lineTotal | currency:'INR':'symbol-narrow':'1.0-0' }}</strong>
+      </div>
+      <div class="summary-total"><span>Order total</span><strong>{{ placedOrder.total | currency:'INR':'symbol-narrow':'1.0-0' }}</strong></div>
+      <p class="summary-thanks"><span aria-hidden="true">✳</span> Thanks for choosing thoughtfully.</p>
+    </div>
+    <a routerLink="/" class="continue-button">Back to the everyday edit <span aria-hidden="true">↗</span></a>
+  </section>
+</main>

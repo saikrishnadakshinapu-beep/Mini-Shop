@@ -1,0 +1,138 @@
+<main class="shop-page page-shell">
+  <section class="hero" aria-labelledby="shop-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="eyebrow-dot"></span> THE EVERYDAY EDIT <span class="eyebrow-rule"></span> 05 ESSENTIALS</p>
+      <h1 id="shop-title">Everyday tech,<br><span>thoughtfully chosen.</span></h1>
+      <p class="hero-description">The little upgrades that make work, home, and everything in between feel easier.</p>
+    </div>
+    <div class="hero-note">
+      <span class="note-spark" aria-hidden="true">✳</span>
+      <span>Less noise.<br>Better things.</span>
+      <span class="note-index">01 / 05</span>
+    </div>
+    <div class="hero-orbit orbit-one" aria-hidden="true"></div>
+    <div class="hero-orbit orbit-two" aria-hidden="true"></div>
+  </section>
+
+  <div class="shop-toolbar">
+    <div class="section-title">
+      <span class="section-index">01</span>
+      <h2>Shop essentials</h2>
+      <span class="result-count">{{ products().length }} items</span>
+    </div>
+    <label class="search-box">
+      <span class="search-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Search products</span>
+      <input type="search" [value]="searchTerm()" (input)="onSearch($event)" placeholder="Find your next favourite" autocomplete="off">
+    </label>
+  </div>
+
+  <div class="shop-layout">
+    <section class="catalog-area" aria-label="Product catalog" aria-live="polite">
+      <div class="catalog-status" *ngIf="loading()" role="status">
+        <span class="spinner"></span><span>Finding the good stuff…</span>
+      </div>
+      <div class="error-panel catalog-error" *ngIf="catalogError()" role="alert">
+        <span class="error-mark" aria-hidden="true">!</span>
+        <div><strong>Catalog unavailable</strong><p>{{ catalogError() }}</p></div>
+        <button class="text-button" type="button" (click)="refreshProducts()">Try again</button>
+      </div>
+      <div class="product-grid" *ngIf="!loading() && !catalogError() && products().length">
+        <article class="product-card" *ngFor="let product of products(); let i = index">
+          <div class="product-art" [class]="'product-art art-' + productArt(product.name)" aria-hidden="true">
+            <span class="art-index">0{{ i + 1 }}</span>
+            <span class="art-glow"></span>
+            <span class="mouse-shape"><i></i></span>
+            <span class="keyboard-shape"><i></i><i></i><i></i></span>
+            <span class="hub-shape"><i></i><i></i><i></i></span>
+            <span class="speaker-shape"><i></i></span>
+            <span class="stand-shape"><i></i><i></i></span>
+            <span class="generic-shape"></span>
+            <span class="art-badge">SHIFT SELECT</span>
+          </div>
+          <div class="product-meta">
+            <div class="product-heading">
+              <div>
+                <h3>{{ product.name }}</h3>
+                <p class="stock-line" [class.out-of-stock]="product.stock === 0">
+                  <span class="stock-dot"></span>
+                  {{ product.stock > 0 ? product.stock + ' available' : 'Out of stock' }}
+                </p>
+              </div>
+              <strong class="product-price">{{ product.price | currency:'INR':'symbol-narrow':'1.0-0' }}</strong>
+            </div>
+            <button class="add-button" type="button" [disabled]="product.stock === 0" (click)="addToCart(product)">
+              <span>{{ product.stock === 0 ? 'Currently unavailable' : 'Add to bag' }}</span>
+              <span class="add-arrow" aria-hidden="true">↗</span>
+            </button>
+          </div>
+        </article>
+      </div>
+      <div class="empty-search" *ngIf="!loading() && !catalogError() && !products().length">
+        <span class="empty-symbol" aria-hidden="true">⌕</span>
+        <h3>No matches this time.</h3>
+        <p>Try a different search and we’ll keep looking.</p>
+        <button class="text-button" type="button" (click)="searchTerm.set(''); refreshProducts()">Clear search</button>
+      </div>
+    </section>
+
+    <aside class="cart-panel" id="cart" aria-labelledby="cart-title">
+      <div class="cart-panel-head">
+        <div>
+          <p class="eyebrow cart-eyebrow">YOUR SELECTION</p>
+          <h2 id="cart-title">The bag<span class="cart-title-count">{{ cart.itemCount() }}</span></h2>
+        </div>
+        <span class="cart-stamp" aria-hidden="true">S.</span>
+      </div>
+
+      <p class="notice-message" *ngIf="cartNotice()" role="status">{{ cartNotice() }}</p>
+      <div class="empty-cart" *ngIf="cart.lines().length === 0">
+        <div class="empty-bag" aria-hidden="true"><span></span></div>
+        <h3>A little room for good things.</h3>
+        <p>Your bag is empty for now. Find something you’ll use every day.</p>
+      </div>
+
+      <div class="cart-lines" *ngIf="cart.lines().length > 0">
+        <div class="cart-line" *ngFor="let line of cart.lines()">
+          <div class="cart-line-art" [class]="'mini-art-' + productArt(line.product.name)" aria-hidden="true"><span></span></div>
+          <div class="cart-line-content">
+            <div class="cart-line-top">
+              <div><h3>{{ line.product.name }}</h3><p>{{ line.product.price | currency:'INR':'symbol-narrow':'1.0-0' }} each</p></div>
+              <button class="remove-button" type="button" (click)="removeFromCart(line.product)" [attr.aria-label]="'Remove ' + line.product.name + ' from your bag'">×</button>
+            </div>
+            <div class="cart-line-bottom">
+              <div class="quantity-control" [attr.aria-label]="'Quantity for ' + line.product.name">
+                <button type="button" (click)="updateQuantity(line.product, -1)" [attr.aria-label]="'Decrease ' + line.product.name + ' quantity'">−</button>
+                <span>{{ line.quantity }}</span>
+                <button type="button" (click)="updateQuantity(line.product, 1)" [disabled]="line.quantity >= line.product.stock" [attr.aria-label]="'Increase ' + line.product.name + ' quantity'">+</button>
+              </div>
+              <strong>{{ line.lineTotal | currency:'INR':'symbol-narrow':'1.0-0' }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-error" *ngIf="orderError()" role="alert">
+        <p>{{ orderError() }}</p>
+        <button class="text-button" type="button" (click)="refreshProducts()">Refresh availability</button>
+      </div>
+
+      <div class="cart-totals" *ngIf="cart.lines().length > 0">
+        <div><span>Subtotal</span><strong>{{ cart.subtotal() | currency:'INR':'symbol-narrow':'1.0-0' }}</strong></div>
+        <div class="grand-total"><span>Total</span><strong>{{ cart.total() | currency:'INR':'symbol-narrow':'1.0-0' }}</strong></div>
+        <p>What you see is what you pay.</p>
+      </div>
+      <button class="checkout-button" type="button" [disabled]="cart.lines().length === 0 || submitting()" (click)="placeOrder()">
+        <span>{{ submitting() ? 'Placing your order…' : 'Place your order' }}</span>
+        <span class="checkout-arrow" aria-hidden="true">→</span>
+      </button>
+      <p class="checkout-footnote"><span class="lock-mark" aria-hidden="true">◌</span> A quick, no-fuss checkout</p>
+    </aside>
+  </div>
+
+  <section class="closing-note" aria-label="Store note">
+    <span class="closing-star" aria-hidden="true">✳</span>
+    <p>Thoughtfully picked.<br><em>Ready to make a difference.</em></p>
+    <span class="closing-issue">A SMALLER, BETTER SELECTION — ALWAYS.</span>
+  </section>
+</main>

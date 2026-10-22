@@ -1,0 +1,16 @@
+{
+  "name": "mean-store-assignment",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace backend",
+    "dev:web": "npm run start --workspace frontend",
+    "seed": "npm run seed --workspace backend",
+    "test": "npm run test --workspace backend",
+    "build": "npm run build --workspace frontend"
+  }
+}
