@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { CartService } from './core/cart.service';
+import { ToastService } from './core/toast.service';
 
 @Component({
   selector: 'store-root',
@@ -23,6 +24,18 @@ import { CartService } from './core/cart.service';
         </nav>
       </div>
     </header>
+    @if (toast.current(); as activeToast) {
+      <div class="toast-region" aria-live="polite" aria-atomic="true">
+        <div class="app-toast" [class]="'app-toast toast-' + activeToast.kind"
+             [attr.role]="activeToast.kind === 'error' ? 'alert' : 'status'">
+          <span class="toast-icon" aria-hidden="true">
+            {{ activeToast.kind === 'success' ? '✓' : activeToast.kind === 'error' ? '!' : 'i' }}
+          </span>
+          <span class="toast-message">{{ activeToast.message }}</span>
+          <button type="button" class="toast-dismiss" (click)="toast.dismiss()" aria-label="Dismiss notification">×</button>
+        </div>
+      </div>
+    }
     <router-outlet />
     <footer class="site-footer">
       <span>shift<span class="brand-period">.</span></span>
@@ -32,4 +45,5 @@ import { CartService } from './core/cart.service';
 })
 export class AppComponent {
   readonly cart = inject(CartService);
+  readonly toast = inject(ToastService);
 }

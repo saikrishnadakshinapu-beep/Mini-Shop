@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, EMPTY, of, Subject, switchMap, tap } from 'rxjs';
 import { ApiService } from '../../core/api.service';
 import { CartService } from '../../core/cart.service';
+import { ToastService } from '../../core/toast.service';
 import { ApiErrorResponse, Product } from '../../core/models';
 
 @Component({
@@ -18,6 +19,7 @@ export class ShopPageComponent {
   private readonly api = inject(ApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
   readonly cart = inject(CartService);
   private readonly searches = new Subject<string>();
 
@@ -65,17 +67,29 @@ export class ShopPageComponent {
 
   addToCart(product: Product): void {
     this.orderError.set('');
-    this.cartNotice.set(this.cart.add(product) ? `${product.name} added to your cart.` : 'You already have all available stock in your cart.');
+    const added = this.cart.add(product);
+    this.cartNotice.set('');
+    this.toast.show(
+      added ? `${product.name} added to your bag.` : product.stock === 0 ? `${product.name} is out of stock.` : `You’ve added all available ${product.name} stock.`,
+      added ? 'success' : 'info',
+    );
   }
 
   updateQuantity(product: Product, delta: number): void {
     this.cartNotice.set('');
-    this.cart.changeQuantity(product.id, delta);
+    const line = this.cart.lines().find((item) => item.productId === product.id);
+    if (!line) return;
+    const updated = this.cart.changeQuantity(product.id, delta);
+    if (!updated) return;
+    this.toast.show(delta < 0 && line.quantity === 1
+      ? `${product.name} removed from your bag.`
+      : `${product.name} quantity updated.`, 'info');
   }
 
   removeFromCart(product: Product): void {
     this.cart.remove(product.id);
-    this.cartNotice.set(`${product.name} removed from your cart.`);
+    this.cartNotice.set('');
+    this.toast.show(`${product.name} removed from your bag.`, 'info');
   }
 
   placeOrder(): void {
@@ -85,12 +99,15 @@ export class ShopPageComponent {
     const items = this.cart.lines().map(({ productId, quantity }) => ({ productId, quantity }));
     this.api.createOrder(items).pipe(
       catchError((error: unknown) => {
-        this.orderError.set(this.messageFor(error, 'We could not place your order. Please try again.'));
+        const message = this.messageFor(error, 'We could not place your order. Please try again.');
+        this.orderError.set(message);
+        this.toast.show(message, 'error');
         return EMPTY;
       }),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe((order) => {
       this.cart.clear();
+      this.toast.show('Your order is confirmed.');
       void this.router.navigate(['/orders', order.orderNumber]);
     }).add(() => this.submitting.set(false));
   }
