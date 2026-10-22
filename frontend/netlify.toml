@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build --workspace frontend"
+  command = "npm --workspace mean-store-frontend run build"
   publish = "frontend/dist/mean-store"
 
 [[redirects]]
