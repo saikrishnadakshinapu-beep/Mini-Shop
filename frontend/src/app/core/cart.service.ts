@@ -20,6 +20,10 @@ export class CartService {
   readonly subtotal = computed(() => this.lines().reduce((sum, line) => sum + line.lineTotal, 0));
   readonly total = computed(() => this.subtotal());
 
+  quantityFor(productId: string): number {
+    return this.entries().find((entry) => entry.productId === productId)?.quantity ?? 0;
+  }
+
   togglePanel(): void {
     this.panelOpen.update((open) => !open);
   }

@@ -41,6 +41,10 @@
         <article class="product-card" *ngFor="let product of products(); let i = index">
           <div class="product-art" [class]="'product-art art-' + productArt(product.name)" aria-hidden="true">
             <span class="art-index">0{{ i + 1 }}</span>
+            <span class="cart-quantity-badge" *ngIf="cart.quantityFor(product.id) > 0">
+              <span class="quantity-badge-dot" aria-hidden="true"></span>
+              {{ cart.quantityFor(product.id) }} in bag
+            </span>
             <span class="art-glow"></span>
             <span class="mouse-shape"><i></i></span>
             <span class="keyboard-shape"><i></i><i></i><i></i></span>
@@ -83,7 +87,13 @@
           <p class="eyebrow cart-eyebrow">YOUR SELECTION</p>
           <h2 id="cart-title">The bag<span class="cart-title-count">{{ cart.itemCount() }}</span></h2>
         </div>
-        <button class="cart-close" type="button" (click)="cart.closePanel()" aria-label="Close your bag">×</button>
+        <div class="cart-actions">
+          <button class="clear-cart-button" *ngIf="cart.itemCount() > 0" type="button" (click)="clearCart()" aria-label="Clear all items from your bag">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m-9 0 1 13h10l1-13M10 11v5m4-5v5" /></svg>
+            <span>Clear</span>
+          </button>
+          <button class="cart-close" type="button" (click)="cart.closePanel()" aria-label="Close your bag">×</button>
+        </div>
       </div>
 
       <p class="notice-message" *ngIf="cartNotice()" role="status">{{ cartNotice() }}</p>

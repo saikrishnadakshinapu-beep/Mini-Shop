@@ -97,6 +97,13 @@ export class ShopPageComponent {
     this.toast.show(`${product.name} removed from your bag.`, 'info');
   }
 
+  clearCart(): void {
+    if (this.cart.itemCount() === 0) return;
+    this.cart.clear();
+    this.cartNotice.set('');
+    this.toast.show('Your bag has been cleared.', 'info');
+  }
+
   placeOrder(): void {
     if (this.submitting() || this.cart.lines().length === 0) return;
     this.submitting.set(true);
