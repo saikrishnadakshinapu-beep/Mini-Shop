@@ -109,6 +109,12 @@ Build both workspaces with:
 npm run build
 ```
 
+## Deploy the backend on Render
+
+The root `render.yaml` configures a Node web service for the `main` branch. Connect this repository to Render as a Blueprint, then set the `MONGODB_URI` secret to your MongoDB connection string in the service environment. The secret is intentionally not stored in this repository. The service uses `/api/health` as its health check and listens on Render's assigned `PORT`.
+
+Before the service can become healthy, the MongoDB cluster must accept connections from the Render service. The backend does not seed or reset the remote database during deployment; seed the catalog only after confirming the target database is intended for this app.
+
 ## AI usage and development notes
 
 - **AI coding tool:** ChatGPT Codex was used to analyze the assignment, plan the MEAN architecture, and write/refine the application and documentation.

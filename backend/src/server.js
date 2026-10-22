@@ -10,7 +10,7 @@ let server;
 async function start() {
   try {
     await connectDatabase();
-    server = app.listen(port, () => {
+    server = app.listen(port, '0.0.0.0', () => {
       console.log(`MEAN Store API listening on http://localhost:${port}`);
     });
   } catch (error) {
